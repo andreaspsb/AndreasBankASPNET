@@ -1,82 +1,62 @@
-
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace AndreasBank.Models;
 
 public class Cliente
 {
-    private string _nome;
-    private string _cpf;
-    private string _email;
-    private string _telefone;
-    private string _endereco;
-    private DateTime _dataNascimento;
-    private DateTime _dataCadastro;
-    private EnumStatusCliente _status;
-
-    public enum EnumStatusCliente
-    {
-        Ativo,
-        Inativo,
-        Bloqueado
-    }
-
-    // Construtor público sem parâmetros para o Entity Framework
-    public Cliente() { }
-
-    public Cliente(string nome, string cpf, string email, string telefone, string endereco, DateTime dataNascimento)
-    {
-        _nome = nome;
-        _cpf = cpf;
-        _email = email;
-        _telefone = telefone;
-        _endereco = endereco;
-        _dataNascimento = dataNascimento;
-        _dataCadastro = DateTime.Now;
-        _status = EnumStatusCliente.Ativo; // Default status
-    }
-
-    public string Nome
-    {
-        get => _nome;
-        set => _nome = value;
-    }
+    // Padronização dos campos privados para camelCase
+    private string? cpfCliente = string.Empty;
+    private string? nomeCliente = string.Empty;
+    private string? emailCliente = string.Empty;
+    private DateTime dataNascimentoCliente = DateTime.Now;
 
     [Key]
-    public string Cpf
+    [Required]
+    [StringLength(11, MinimumLength = 11, ErrorMessage = "O CPF deve ter 11 dígitos.")]
+    public string? CPF
     {
-        get => _cpf;
-        set => _cpf = value;
+        get => cpfCliente;
+        set => cpfCliente = value;
     }
-    public string Email
+
+    [Required]
+    [StringLength(100)]
+    public string? Nome
     {
-        get => _email;
-        set => _email = value;
+        get => nomeCliente;
+        set => nomeCliente = value;
     }
-    public string Telefone
+
+    [Required]
+    [EmailAddress]
+    [StringLength(100)]
+    public string? Email
     {
-        get => _telefone;
-        set => _telefone = value;
+        get => emailCliente;
+        set => emailCliente = value;
     }
-    public string Endereco
-    {
-        get => _endereco;
-        set => _endereco = value;
-    }
+
+    [Required]
+    [DataType(DataType.Date)]
     public DateTime DataNascimento
     {
-        get => _dataNascimento;
-        set => _dataNascimento = value;
+        get => dataNascimentoCliente;
+        set => dataNascimentoCliente = value;
     }
-    public DateTime DataCadastro
+
+    // Propriedade de navegação para as contas do cliente
+    public virtual ICollection<Conta> Contas { get; set; } = new List<Conta>();
+
+    // Construtor público sem parâmetros para o Entity Framework
+    public Cliente() { }    
+
+    public Cliente(string cpf, string nome, string email, DateTime dataNascimento)
     {
-        get => _dataCadastro;
-        set => _dataCadastro = value;
-    }
-    public EnumStatusCliente Status
-    {
-        get => _status;
-        set => _status = value;
+        cpfCliente = cpf;
+        nomeCliente = nome;
+        emailCliente = email;
+        dataNascimentoCliente = dataNascimento;
     }
 }

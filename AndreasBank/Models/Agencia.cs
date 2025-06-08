@@ -1,68 +1,88 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace AndreasBank.Models;
 
 public class Agencia
 {
-    private string _numero;
-    private string _nome;
-    private string _endereco;
-    private string _telefone;
-    private string _email;
-    private DateTime _dataCriacao;
-    private EnumStatusAgencia _status;
+    // Padronização dos campos privados para camelCase
+    private string? numeroAgencia = string.Empty;
+    private string? nomeAgencia = string.Empty;
+    private string? enderecoAgencia = string.Empty;
+    private string? telefoneAgencia = string.Empty;
+    private string? emailAgencia = string.Empty;
+    private DateTime dataCriacaoAgencia = DateTime.Now;
+    private EnumStatusAgencia statusAgenciaEnum = EnumStatusAgencia.Ativo;
 
     // Construtor público sem parâmetros para o Entity Framework
     public Agencia() { }
 
+    // Construtor simplificado
     public Agencia(string numero, string nome, string endereco, string telefone, string email)
     {
-        _numero = numero;
-        _nome = nome;
-        _endereco = endereco;
-        _telefone = telefone;
-        _email = email;
-        _dataCriacao = DateTime.Now;
-        _status = EnumStatusAgencia.Ativo; // Default status
+        numeroAgencia = numero;
+        nomeAgencia = nome;
+        enderecoAgencia = endereco;
+        telefoneAgencia = telefone;
+        emailAgencia = email;
     }
 
     [Key]
-    public string Numero
+    [Required]
+    [StringLength(4, MinimumLength = 4, ErrorMessage = "O número da agência deve ter exatamente 4 dígitos.")]
+    [RegularExpression(@"^\d{4}$", ErrorMessage = "O número da agência deve conter apenas dígitos.")]
+    public string? Numero
     {
-        get => _numero;
-        set => _numero = value;
+        get => numeroAgencia;
+        set => numeroAgencia = value;
     }
-    public string Nome
+
+    [Required]
+    [StringLength(100)]
+    public string? Nome
     {
-        get => _nome;
-        set => _nome = value;
+        get => nomeAgencia;
+        set => nomeAgencia = value;
     }
-    public string Endereco
+
+    [Required]
+    [StringLength(200)]
+    public string? Endereco
     {
-        get => _endereco;
-        set => _endereco = value;
+        get => enderecoAgencia;
+        set => enderecoAgencia = value;
     }
-    public string Telefone
+
+    [Required]
+    [StringLength(20)]
+    public string? Telefone
     {
-        get => _telefone;
-        set => _telefone = value;
+        get => telefoneAgencia;
+        set => telefoneAgencia = value;
     }
-    public string Email
+
+    [Required]
+    [EmailAddress]
+    [StringLength(100)]
+    public string? Email
     {
-        get => _email;
-        set => _email = value;
+        get => emailAgencia;
+        set => emailAgencia = value;
     }
     public DateTime DataCriacao
     {
-        get => _dataCriacao;
-        set => _dataCriacao = value;
+        get => dataCriacaoAgencia;
+        set => dataCriacaoAgencia = value;
     }
     public EnumStatusAgencia Status
     {
-        get => _status;
-        set => _status = value;
+        get => statusAgenciaEnum;
+        set => statusAgenciaEnum = value;
     }
+
+    // Propriedade de navegação para contas vinculadas à agência
+    public virtual ICollection<Conta> Contas { get; set; } = new List<Conta>();
 }
 public enum EnumStatusAgencia
 {

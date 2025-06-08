@@ -50,7 +50,7 @@ namespace AndreasBank.Repositories
         {
             return await _context.Contas
                 .Include(c => c.Agencia)
-                .Where(c => c.Titular.Cpf == cpf)
+                .Where(c => c.Titular.CPF == cpf)
                 .ToListAsync();
         }
         //GetByAgenciaAsync

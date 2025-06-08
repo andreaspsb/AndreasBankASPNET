@@ -35,7 +35,7 @@ namespace AndreasBank.Controllers
         public async Task<ActionResult> Add(Cliente cliente)
         {
             await _clienteService.AddAsync(cliente);
-            return CreatedAtAction(nameof(GetByCpf), new { cpf = cliente.Cpf }, cliente);
+            return CreatedAtAction(nameof(GetByCpf), new { cpf = cliente.CPF }, cliente);
         }
 
         [HttpPut]
